@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Chat</title>
+    <style>
+        .mrgn {
+            margin-top: 10rem;
+            margin-left: 14rem;
+            margin-right: 14rem;
+        }
+        .alcenter {
+            text-align: center;
+        }
+    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/solar/bootstrap.min.css" integrity="sha384-NCwXci5f5ZqlDw+m7FwZSAwboa0svoPPylIW3Nf+GBDsyVum+yArYnaFLE9UDzLd" crossorigin="anonymous"></head>
+<body>
+    <nav class="pl-5 navbar navbar-expand-lg navbar-dark bg-dark">
+        <h4 class="navbar-brand">Super chat</h4>
+    </nav>
+
+    <div class="mrgn jumbotron">
+        <h1 class="display-4 alcenter">Join a ChatRoom !!</h1>
+        <form class="" id="intro-form" action="http://localhost:5000/chat" method="POST">
+            <div class="pt-5 form-group">
+                <input name="usrname" id="usrname" class="offset-3 col-6 form-control" type="text" placeholder="Enter Username">
+            </div>
+            <div class="pt-3 form-group">
+                <select id="room" name="room" class="offset-3 col-6 custom-select">
+                  <option value="" selected="">Select a Room</option>
+                  <option value="Javascript">Javascript</option>
+                  <option value="Python">Python</option>
+                  <option value="C++">C++</option>
+                </select>
+            </div>
+            <div id="alert" class="offset-5 col-2" style="color: red;" >
+                    
+            </div>
+            <div class="form-group pt-5">
+                <button type="submit" class="offset-5 col-2 btn btn-success">Chat !!</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        let introForm = document.getElementById('intro-form');
+        introForm.addEventListener('submit', e => {
+            e.preventDefault();
+            document.getElementById('alert').value = "";
+            if(document.getElementById('usrname').value==="")
+            {
+                console.log('No usr');
+                document.getElementById('alert').innerText = "Pls Enter Username";
+            }
+            else if(document.getElementById('room').value==="")
+            {
+                document.getElementById('alert').innerText = "Pls select any room";
+            }
+            else {
+                document.getElementById('intro-form').submit();
+            }
+        })
+    </script>
+</body>
+</html>
