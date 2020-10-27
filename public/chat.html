@@ -53,23 +53,30 @@
             <button id="sendmsg" class="btn btn-success" onclick="addmsg()">Send !!</button>
         </div>
     </div>
+    <script src="/socket.io/socket.io.js"></script>
     <script>
+        let socket = io();
         function addmsg() {
             let msg=document.getElementById('msgform').value;
             document.getElementById('msgform').value="";
-            let chatBox = document.getElementById('chat-box').innerHTML;
-            chatBox=chatBox+('<div class="chat-container mt-3"><h6 class="font-weight-bold" id="headmsg">Devesh</h6>'+msg+'</div>');
+            socket.emit('chatmsg',msg);
+            // let chatBox = document.getElementById('chat-box').innerHTML;
+
+            // chatBox=chatBox+('<div class="chat-container mt-3"><h6 class="font-weight-bold" id="headmsg">Devesh</h6>'+msg+'</div>');
             // console.log(chatBox);
-            document.getElementById('chat-box').innerHTML = chatBox;
+            // document.getElementById('chat-box').innerHTML = chatBox;
         }
         let input = document.getElementById("msgform");
         input.addEventListener("keyup", function(event) {
-        if (event.keyCode === 13) {
-            event.preventDefault();
-            console.log("Hello");
-            document.getElementById("sendmsg").click();
-        }
-    });
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                // console.log("Hello");
+                document.getElementById("sendmsg").click();
+            }
+        });
+        socket.on('message',message => {
+            console.log(message);
+        })
     </script>
 </body>
 </html>

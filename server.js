@@ -27,6 +27,15 @@ app.post("/chat",(req,res) => {
 
 io.on('connection',(socket) => {
     console.log('New socketio connection');
+    socket.emit('message','Welcome to Super-Chat!');
+    socket.broadcast.emit('message','A user has joined the room');
+    socket.on('disconnect',() => {
+        io.emit('message','A user has left this room');
+    })
+    socket.on('chatmsg',(msg) => {
+        // console.log(msg);
+        io.emit('message',msg);
+    })
 });
 
 
