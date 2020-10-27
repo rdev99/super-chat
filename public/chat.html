@@ -13,6 +13,22 @@
         .alcenter {
             text-align: center;
         }
+        .chat {
+            background-color: lightgray;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+        .chat-container {
+            border-radius: 2rem;;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            margin-left: 50rem;
+            padding-right: 2rem;
+            padding-left: 2rem;
+            text-align: center;
+            background-color: yellowgreen;
+            color: black;
+        }
     </style>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/solar/bootstrap.min.css" integrity="sha384-NCwXci5f5ZqlDw+m7FwZSAwboa0svoPPylIW3Nf+GBDsyVum+yArYnaFLE9UDzLd" crossorigin="anonymous"></head>
 </head>
@@ -22,7 +38,38 @@
     </nav>
 
     <div class="mrgn jumbotron">
-        <h1 class="display-4 alcenter"></h1>
+        <div id="chat-box" class="container chat">
+            <div class="chat-container mt-3">
+                <h6 class="font-weight-bold" id="headmsg">Devesh</h6>
+                Hello my name is Devesh Ranjan and i am a very good boy
+            </div>
+            <div class="chat-container mt-3">
+                <h6 class="font-weight-bold" id="headmsg">Devesh</h6>
+                Hello my name is Devesh Ranjan and i am a very good boy
+            </div>
+        </div>
+        <div class="row mt-5">
+            <input id="msgform" class="form-control offset-1 col-10" type="text">
+            <button id="sendmsg" class="btn btn-success" onclick="addmsg()">Send !!</button>
+        </div>
     </div>
+    <script>
+        function addmsg() {
+            let msg=document.getElementById('msgform').value;
+            document.getElementById('msgform').value="";
+            let chatBox = document.getElementById('chat-box').innerHTML;
+            chatBox=chatBox+('<div class="chat-container mt-3"><h6 class="font-weight-bold" id="headmsg">Devesh</h6>'+msg+'</div>');
+            // console.log(chatBox);
+            document.getElementById('chat-box').innerHTML = chatBox;
+        }
+        let input = document.getElementById("msgform");
+        input.addEventListener("keyup", function(event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            console.log("Hello");
+            document.getElementById("sendmsg").click();
+        }
+    });
+    </script>
 </body>
 </html>
