@@ -44,6 +44,16 @@
             font-size: 0.8rem;
             color: rgb(61, 4, 61);
         }
+        .users {
+            background-color: rgb(255, 150, 14);
+            color: rgba(0, 0, 0, 0.897);
+            font-size: 1.2rem;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            padding-left: 0.8rem;
+            padding-right: 0.8rem;
+            border-radius: 1.2rem;
+        }
     </style>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/solar/bootstrap.min.css" integrity="sha384-NCwXci5f5ZqlDw+m7FwZSAwboa0svoPPylIW3Nf+GBDsyVum+yArYnaFLE9UDzLd" crossorigin="anonymous"></head>
 </head>
@@ -76,6 +86,14 @@
         socket.emit('start','start');
         socket.on('roomname',msg => {
             document.getElementById('rm').innerText=msg;
+        })
+        socket.on('numusers',users => {
+            let usrmsg = '';
+            for(let i=0;i<users.length;i++)
+            {
+                usrmsg=usrmsg+`<span class="users">${users[i].username}</span>&nbsp;&nbsp;`;
+            }
+            document.getElementById('usr').innerHTML=usrmsg;
         })
 
         function addmsg() {

@@ -5,7 +5,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const socketio = require('socket.io');
 const moment = require('moment');
-const {adduser,getuser} = require('./utils/users')
+const {adduser,getuser,returnuser , removeuser} = require('./utils/users')
 const msg = require('./utils/messages');
 
 
@@ -40,18 +40,24 @@ io.on('connection',(socket) => {
         let user = adduser(socket.id,roomname,username);
         socket.join(user.room);
         socket.emit('roomname',roomname);
-        socket.emit('message',msg('super-chat-bot',`Welcome to the chat ${username}`));
+        socket.emit('message',msg('super-chat-bot',`Welcome to the room ${username}`));
         socket.to(user.room).broadcast.emit('message',msg('super-chat-bot',`${username} has joined this room`));
+        emituser(user.room,socket.id);
     })
     
     // socket.broadcast.emit('message','A user has joined the room');
 
+    function emituser (room) {
+        io.to(room).emit('numusers',returnuser(room));
+    }
 
 
 
     socket.on('disconnect',() => {
         let user=getuser(socket.id);
         io.to(user.room).emit('message',msg('super-chat-bot',`${user.username} has left this room`));
+        removeuser(socket.id);
+        emituser(user.room);
     })
     socket.on('chatmsg',(message) => {
         // console.log(msg);
