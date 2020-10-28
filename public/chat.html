@@ -6,7 +6,12 @@
     <title>Super Chat</title>
     <style>
         .mrgn {
-            margin-top: 10rem;
+            margin-top: 7rem;
+            margin-left: 14rem;
+            margin-right: 14rem;
+        }
+        .mrgn1{
+            margin-top: 2rem;
             margin-left: 14rem;
             margin-right: 14rem;
         }
@@ -17,6 +22,8 @@
             background-color: lightgray;
             padding-top: 2rem;
             padding-bottom: 2rem;
+            max-height: 350px;
+	        overflow-y: scroll;
         }
         .chat-container {
             border-radius: 2rem;
@@ -46,29 +53,35 @@
         <h4 class="rm">Room : <span id="rm"></span></h4>
     </nav>
 
+    <div class="mrgn1 jumbotron">
+        <span style="font-size: 1.8rem;">Users in this room : <span id="usr"></span></span>
+        
+    </div>
+
+
     <div class="mrgn jumbotron">
         <div id="chat-box" class="container chat">
             
         </div>
         <div class="row mt-5">
-            <input id="msgform" class="form-control offset-1 col-10" type="text">
+            <input id="msgform" class="form-control offset-2 col-8" type="text">
             <button id="sendmsg" class="btn btn-success" onclick="addmsg()">Send !!</button>
         </div>
     </div>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        var usrname;
         var roomname;
         let socket = io();
+
+        socket.emit('start','start');
+        socket.on('roomname',msg => {
+            document.getElementById('rm').innerText=msg;
+        })
+
         function addmsg() {
             let msg=document.getElementById('msgform').value;
             document.getElementById('msgform').value="";
-            console.log(usrname);
-            let o1 ={
-                msg,
-                username : usrname
-            }
-            socket.emit('chatmsg',o1);
+            socket.emit('chatmsg',msg);
         }
         let input = document.getElementById("msgform");
         input.addEventListener("keyup", function(event) {
@@ -81,14 +94,12 @@
         socket.on('message',message => {
             console.log(message);
             let chatBox = document.getElementById('chat-box').innerHTML;
-            chatBox=chatBox+('<div class="chat-container mt-3"><h6 class="font-weight-bold" id="headmsg">'+message.username+'</h6>'+message.msg+'<br><footer class="msgfooter">'+message.time+'</footer></div>');
+            chatBox=chatBox+('<div class="chat-container mt-3"><h6 class="font-weight-bold" id="headmsg">'+message.username+'</h6>'+message.text+'<br><footer class="msgfooter">'+message.time+'</footer></div>');
             document.getElementById('chat-box').innerHTML = chatBox;
+            let chatMessages = document.querySelector('.chat');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         })
-        socket.on('joinmember',usrinfo => {
-            usrname = usrinfo.username;
-            roomname = usrinfo.roomname;
-            document.getElementById('rm').innerText=roomname;
-        })
+        
         
     </script>
 </body>

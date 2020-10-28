@@ -5,6 +5,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const socketio = require('socket.io');
 const moment = require('moment');
+const {adduser,getuser} = require('./utils/users')
+const msg = require('./utils/messages');
 
 
 const app=express();
@@ -33,40 +35,27 @@ app.post("/chat",(req,res) => {
 
 io.on('connection',(socket) => {
     // console.log('New socketio connection');
-    let o1={
-        username,
-        roomname
-    }
-    let o2 = {
-        username : 'super-chat-bot',
-        msg : 'Welcome to Superchat '+username+' !!',
-        time : moment().format('h:mm a')
-    }
-    socket.emit('joinmember',o1);
-    socket.emit('message',o2);
+
+    socket.on('start',(messagaga) => {
+        let user = adduser(socket.id,roomname,username);
+        socket.emit('roomname',roomname);
+        socket.emit('message',msg('super-chat-bot',`Welcome to the chat ${username}`));
+        socket.broadcast.emit('message',msg('super-chat-bot',`${username} has joined this room`));
+    })
+    
     // socket.broadcast.emit('message','A user has joined the room');
-    let o11 ={
-        username : 'super-chat-bot',
-        msg : `${username} has joined this room`,
-        time : moment().format('h:mm a')
-    }
-    socket.broadcast.emit('message',o11);
+
+
+
+
     socket.on('disconnect',() => {
-        let o3 = {
-            username : 'super-chat-bot',
-            msg : 'A user has left this room',
-            time : moment().format('h:mm a')
-        }
-        io.emit('message',o3);
+        let user=getuser(socket.id);
+        io.emit('message',msg('super-chat-bot',`${user.username} has left this room`));
     })
     socket.on('chatmsg',(message) => {
         // console.log(msg);
-        let o4 = {
-            username : message.username,
-            msg : message.msg,
-            time : moment().format('h:mm a')
-        }
-        io.emit('message',o4);
+        let user=getuser(socket.id);
+        io.emit('message',msg(user.username,message));
     })
 });
 
