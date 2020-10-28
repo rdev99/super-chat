@@ -4,6 +4,7 @@ const path  = require('path');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const socketio = require('socket.io');
+const moment = require('moment');
 
 
 const app=express();
@@ -20,21 +21,52 @@ app.use(bodyParser.json());
 app.get("/",(req,res) => {
     res.sendFile(path.join(__dirname,'./public/start.html'));
 })
+
+var username,roomname;
+
 app.post("/chat",(req,res) => {
-    console.log('username = '+req.body.usrname+'  room = '+req.body.room);
+    // console.log('username = '+req.body.usrname+'  room = '+req.body.room);
+    username = req.body.usrname;
+    roomname = req.body.room;
     res.sendFile(path.join(__dirname,'./public/chat.html'));
 })
 
 io.on('connection',(socket) => {
-    console.log('New socketio connection');
-    socket.emit('message','Welcome to Super-Chat!');
-    socket.broadcast.emit('message','A user has joined the room');
+    // console.log('New socketio connection');
+    let o1={
+        username,
+        roomname
+    }
+    let o2 = {
+        username : 'super-chat-bot',
+        msg : 'Welcome to Superchat '+username+' !!',
+        time : moment().format('h:mm a')
+    }
+    socket.emit('joinmember',o1);
+    socket.emit('message',o2);
+    // socket.broadcast.emit('message','A user has joined the room');
+    let o11 ={
+        username : 'super-chat-bot',
+        msg : `${username} has joined this room`,
+        time : moment().format('h:mm a')
+    }
+    socket.broadcast.emit('message',o11);
     socket.on('disconnect',() => {
-        io.emit('message','A user has left this room');
+        let o3 = {
+            username : 'super-chat-bot',
+            msg : 'A user has left this room',
+            time : moment().format('h:mm a')
+        }
+        io.emit('message',o3);
     })
-    socket.on('chatmsg',(msg) => {
+    socket.on('chatmsg',(message) => {
         // console.log(msg);
-        io.emit('message',msg);
+        let o4 = {
+            username : message.username,
+            msg : message.msg,
+            time : moment().format('h:mm a')
+        }
+        io.emit('message',o4);
     })
 });
 
